@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <errno.h>
+#include <string.h>
 #include "nhss.h"
 
 extern nhss_info_t info;
@@ -32,7 +33,7 @@ int record_add(const char dir) {
   return E_SUCCESS;
 }
 
-int record_close() {
+int record_close(void) {
   if (info.recfile == NULL) return E_SUCCESS;
   int ret;
   ret = fclose(info.recfile);
@@ -43,7 +44,7 @@ int record_close() {
   return E_SUCCESS;
 }
 
-char record_get() {
+char record_get(void) {
   int ret;
   ret=fgetc(info.recfile);
   if (ret == EOF) {

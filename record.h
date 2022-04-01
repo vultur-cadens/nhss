@@ -2,6 +2,8 @@
 #define RECORD_H
 
 int record_open(const char *filename, const char *mode);
-char record_get();
+int record_add(const char);
+int record_close(void);
+char record_get(void);
 
 #endif
