@@ -5,6 +5,14 @@
 extern nhss_info_t info;
 
 int record_open(const char *filename, const char *mode) {
+  if (mode[0]=='w') {
+      FILE *f=fopen(filename, "r");
+      if (f != NULL) {
+          fclose(f);
+          fprintf(stderr, "file %s already exists -- not overwriting\n", filename);
+          return E_ERROR;
+      }
+  }
   info.recfile = fopen(filename, mode);
   if (info.recfile == NULL) {
     fprintf(stderr, "nhss: fopen(): %s at %s:%d\n", strerror(errno), __FILE__, __LINE__);
