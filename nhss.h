@@ -1,6 +1,7 @@
 #ifndef NHSS_H
 #define NHSS_H
 
+#define E_WIN 2
 #define E_ERROR 1
 #define E_SUCCESS 0
 
@@ -18,5 +19,6 @@ typedef struct nhss_info {
 // RELPOS == Relative Position.  Returns the character in the position specified by the coordinates, relative to the player.
 
 void statusline(const char *line);
+void showturncount(int);
 
 #endif

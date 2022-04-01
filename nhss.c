@@ -24,6 +24,7 @@ int main(int argc, char **argv) {
   char *filename, *recfile = NULL;
   char movekey;
   int ret,replay=0;
+  int turncount = 0;
 
   while ((ret = getopt(argc, argv, "rhO")) != -1) {
     switch(ret) {
@@ -84,18 +85,19 @@ int main(int argc, char **argv) {
     return E_ERROR;
   }
   level_print();
-
+  showturncount(turncount);
   if (replay) {
     while (movekey=record_get()) {
       ret = moveKey(movekey);
       level_print();
       refresh();
       if (ret == E_ERROR) {
-        endwin();
-        record_close();
-        fprintf(stderr, "nhss: bad recording\n");
+           // no move made, don't count a turn
+          turncount--;
       }
-      if (getch() == 'q') {
+      turncount++;
+      showturncount(turncount);
+      if (getch() == 'q' || ret == E_WIN) {
         endwin();
         record_close();
         return E_SUCCESS;
@@ -113,10 +115,18 @@ int main(int argc, char **argv) {
       level_print();
       if (ret == E_ERROR) {  // If the key is bad, show an error
         statusline("Bad direction key");
+        turncount--;
       }
       else {
         statusline(NULL);
         record_add(movekey);  // If the key is valid, add it to the recording.
+      }
+      turncount++;
+      showturncount(turncount);
+      if (ret == E_WIN) {
+        endwin();
+        record_close();
+        return E_SUCCESS;
       }
     }
   }
@@ -133,4 +143,11 @@ void statusline(const char *line) {
     mvaddstr(info.lines, 0, line);
   }
   move(info.player[0], info.player[1]);
+}
+
+void showturncount(int turncount) {
+    char tcstr[20];
+    sprintf(tcstr, "Turns: %d", turncount);
+    mvaddstr(info.lines+1, 0, tcstr);
+    move(info.player[0], info.player[1]);
 }
